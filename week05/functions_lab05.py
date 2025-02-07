@@ -1,8 +1,55 @@
 # Import the random library to use for the dice later
 import random
 
+# test
+
 # Will the line below print when you import function.py into main.py?
 # print("Inside function.py")
+
+
+# Lab 5: Question 4
+def use_loot(belt, health_points):
+    good_loot_options = ["Health Potion", "Leather Boots"]
+    bad_loot_options = ["Poison Potion"]
+
+    print("    |    !!You see a monster in the distance! So you quickly use your first item:")
+    first_item = belt.pop(0)
+    if first_item in good_loot_options:
+        health_points = min(20, (health_points + 2))
+        print("    |    You used " + first_item +" to up your health to " + str(health_points))
+    elif first_item in bad_loot_options:
+        health_points = max(20, (health_points - 2))
+        print("    |    You used " + first_item + " to hurt your health to " + str(health_points))
+    else:
+        print("    |    You used " + first_item + " but it's not helpful")
+    return belt, health_points
+
+
+# Lab 5: Question 3
+def collect_loot(loot_options, belt):
+    ascii_image3 = """
+                      @@@ @@                
+             *# ,        @              
+           @           @                
+                @@@@@@@@                
+               @   @ @% @*              
+            @     @   ,    &@           
+          @                   @         
+         @                     @        
+        @                       @       
+        @                       @       
+        @*                     @        
+          @                  @@         
+              @@@@@@@@@@@@          
+              """
+    # 2GHF
+    print(ascii_image3)
+    loot_roll = random.choice(range(1, len(loot_options) + 1))
+    loot = loot_options.pop(loot_roll - 1)
+    belt.append(loot)
+    return loot_options, belt
+
+
 
 # Hero's Attack Function
 def hero_attacks(combat_strength, m_health_points):
@@ -69,3 +116,26 @@ def monster_attacks(m_combat_strength, health_points):
         health_points -= m_combat_strength
         print("    |    The monster has reduced Player's health to: " + str(health_points))
     return health_points
+
+# Lab 5: Question 7
+# Recursion
+# You can choose to go crazy, but it will reduce your health points by 5
+def inception_dream(num__dream_lvls):
+    num__dream_lvls = int(num__dream_lvls)
+    # Base Case
+    if num__dream_lvls == 1:
+        print("    |    You are in the deepest dream level now")
+        print("    |", end="    ")
+        input("Start to go back to real life? (Press Enter)")
+        print("    |    You start to regress back through your dreams to real life.")
+        return 2
+
+    # Recursive Case
+    else:
+        # inception_dream(5)
+        # 1 + inception_dream(4)
+        # 1 + 1 + inception_dream(3)
+        # 1 + 1 + 1 + inception_dream(2)
+        # 1 + 1 + 1 + 1 + inception_dream(1)
+        # 1 + 1 + 1 + 1 + 2
+        return 1 + int(inception_dream(num__dream_lvls - 1))
