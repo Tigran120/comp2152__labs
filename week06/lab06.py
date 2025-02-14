@@ -7,6 +7,10 @@ import functions_lab06
 print("    ------------------------------------------------------------------")
 print("    |    Loading previous game data...")
 # Lab 06 - Question 3 and 4
+def save_game(winner, hero_name="", num_starts=0):
+    with open('save.txt', 'a') as file:
+        if winner ==  "Hero":
+            file.write(f"Hero{hero_name} has killed the monster and gained {num_starts} strats.\n")
 
 # Game Flow
 # Define two Dice
