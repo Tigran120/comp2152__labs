@@ -138,7 +138,36 @@ def inception_dream(num_dream_lvls):
         return 1 + int(inception_dream(num_dream_lvls - 1))
 
 # Lab 06 - Question 3 and 4
-
+def save_game(winner, hero_name="", num_stars=0):
+    with open('save.txt', 'a') as file:
+        if winner == "Hero":
+            file.write(f"Hero {hero_name} has killed the monster and gained {num_stars} starts.\n")
+        elif winner == "Monster":
+            file.write(f"Monster killed the {hero_name}")
 # Lab 06 - Question 5a
-
+def load_game():
+    try:
+        with open('save.txt', 'r') as file:
+            print("    |    Loading from saved file..")
+            lines = file.readlines()
+            if lines:
+                last_line = lines[-1].strip()
+                print(last_line)
+                return last_line
+    except FileNotFoundError:
+        print("No previous game found. Starting fresh..")
+        return None
 # Lab 06 - Question 5b
+def adjust_combat_strength(comat_strength, m_comat_strength):
+    last_game = load_game()
+    if last_game:
+        if "Hero" in last_game and "gained" in last_game:
+            num_stars = int(last_game.split()[-2])
+            if num_stars > 3:
+                print("    |    Increasing the Monster comat strength")
+                m_comat_strength += 1
+        elif "Monster killed the" in last_game:
+                print("    |    Increasing the Hero comat strength")
+                comat_strength += 1
+        else:
+            print("    |    ... last game had no efect on Hero/Monster comat strength")
