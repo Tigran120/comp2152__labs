@@ -2,7 +2,13 @@
 import random
 
 # Put all the functions into another file and import them
-import functions_lab05
+import functions_lab06
+
+print("    ------------------------------------------------------------------")
+print("    |    Loading previous game data...")
+
+# Lab 06 - Question 5
+last_game = functions_lab06.load_game()
 
 # Game Flow
 # Define two Dice
@@ -83,6 +89,8 @@ if not input_invalid:
     combat_strength = min(6, (combat_strength + weapon_roll))
     print("    |    The hero\'s weapon is " + str(weapons[weapon_roll - 1]))
 
+    # Lab 06 - Question 5b
+    functions_lab06.adjust_combat_strength(combat_strength, m_combat_strength)
     # Weapon Roll Analysis
     print("    ------------------------------------------------------------------")
     print("    |", end="    ")
@@ -117,21 +125,21 @@ if not input_invalid:
     print("    |", end="    ")
     input("Roll for first item (enter)")
 
-    # Lab 5 - Question 4: Collect Loot First time
-    loot_options, belt = functions_lab05.collect_loot(loot_options, belt)
+    # Collect Loot First time
+    loot_options, belt = functions_lab06.collect_loot(loot_options, belt)
     print("    ------------------------------------------------------------------")
     print("    |", end="    ")
     input("Roll for second item (Press enter)")
 
-    # Lab 5 - Question 4: Collect Loot Second time
-    loot_options, belt = functions_lab05.collect_loot(loot_options, belt)
+    # Collect Loot Second time
+    loot_options, belt = functions_lab06.collect_loot(loot_options, belt)
 
     print("    |    You're super neat, so you organize your belt alphabetically:")
     belt.sort()
     print("    |    Your belt: ", belt)
 
-    ## Lab 5 - Question 4: Use Loot
-    belt, health_points = functions_lab05.use_loot(belt, health_points)
+    # Use Loot
+    belt, health_points = functions_lab06.use_loot(belt, health_points)
 
     print("    ------------------------------------------------------------------")
     print("    |", end="    ")
@@ -167,16 +175,27 @@ if not input_invalid:
     m_combat_strength += min(6, m_combat_strength + monster_powers[power_roll])
     print("    |    The monster's combat strength is now " + str(
         m_combat_strength) + " using the " + power_roll + " magic power")
-
-    # Lab 5: Call Recursive function
-    print("    |", end="    ")
-    num_dream_lvls = input("How many dream levels do you want to go down?")
-    if num_dream_lvls != 0:
-        health_points -= 1
-        crazy_level = functions_lab05.inception_dream(num_dream_lvls)
-        combat_strength += crazy_level
-        print("combat strength: " + str(combat_strength))
-        print("health points: " + str(health_points))
+    # Lab 06 - Question 6
+    # Call Recursive function
+    num_dream_lvls = -1
+    while (num_dream_lvls < 0 or num_dream_lvls > 3):
+        print("    |", end="    ")
+        num_dream_lvls = input("How many dream levels do you want to go down?")
+        if (num_dream_lvls == ""):
+            num_dream_lvls = -1
+            print("dream levels should be a whole number between 0-=3, try again")
+        else:
+            num_dream_lvls = int(num_dream_lvls)
+            if ((num_dream_lvls < 0) or (num_dream_lvls > 3)):
+                num_dream_lvls = -1
+                print("dream levels should be a whole number between 0-=3, try again")
+            elif (not num_dream_lvls == 0):
+                health_points -= 1
+                crazy_level = functions_lab06.inception_dream(num_dream_lvls)
+                combat_strength += crazy_level
+                print("Combat strength: " + str(combat_strength))
+                print("Health point: " + str(health_points))
+        print("num_dream_lvls: ", num_dream_lvls)
 
     # Fight Sequence
     # Loop while the monster and the player are alive. Call fight sequence functions
@@ -192,58 +211,59 @@ if not input_invalid:
         if not (attack_roll % 2 == 0):
             print("    |", end="    ")
             input("You strike (Press enter)")
-            m_health_points = functions_lab05.hero_attacks(combat_strength, m_health_points)
+            m_health_points = functions_lab06.hero_attacks(combat_strength, m_health_points)
             if m_health_points == 0:
                 num_stars = 3
             else:
                 print("    |", end="    ")
                 print("------------------------------------------------------------------")
                 input("    |    The monster strikes (Press enter)!!!")
-                health_points = functions_lab05.monster_attacks(m_combat_strength, health_points)
+                health_points = functions_lab06.monster_attacks(m_combat_strength, health_points)
                 if health_points == 0:
                     num_stars = 1
                 else:
                     num_stars = 2
-
         else:
             print("    |", end="    ")
             input("The Monster strikes (Press enter)")
-
+            health_points = functions_lab06.monster_attacks(m_combat_strength, health_points)
             if health_points == 0:
                 num_stars = 1
-
             else:
                 print("    |", end="    ")
                 print("------------------------------------------------------------------")
                 input("The hero strikes!! (Press enter)")
-                m_health_points = functions_lab05.hero_attacks(combat_strength, m_health_points)
+                m_health_points = functions_lab06.hero_attacks(combat_strength, m_health_points)
                 if m_health_points == 0:
                     num_stars = 3
                 else:
                     num_stars = 2
-
+    if (m_health_points <= 0):
+        winner = "Hero"
+    else:
+        winner = "Monster"
     # Final Score Display
     tries = 0
     input_invalid = True
     while input_invalid and tries in range(5):
         print("    |", end="    ")
-        tries += 1
-        # Lab 5 - Question 1:
+
         hero_name = input("Enter your Hero's name (in two words)")
         name = hero_name.split()
         if len(name) != 2:
             print("    |    Please enter a name with two parts (separated by a space)")
-
+            tries += 1
         else:
             if not name[0].isalpha() or not name[1].isalpha():
                 print("    |    Please enter an alphabetical name")
                 tries += 1
-            else:  # Maziar Two = MaT
+            else:
                 short_name = name[0][0:2:1] + name[1][0:1:1]
                 print("    |    I'm going to call you " + short_name + " for short")
                 input_invalid = False
 
     if not input_invalid:
         stars_display = "*" * num_stars
-        # Lab 5 - Question 2:
-        print("    |    Hero " + short_name + "gets <" + stars_display + "> starts")
+        print("    |    Hero " + short_name + " gets <" + stars_display + "> stars")
+        # Lab 06 - Question 3 and 4
+        functions_lab06.save_game(winner, hero_name=short_name, num_stars=num_stars)
